@@ -60,6 +60,7 @@ use Crater\Http\Controllers\V1\Update\FinishUpdateController;
 use Crater\Http\Controllers\V1\Update\MigrateUpdateController;
 use Crater\Http\Controllers\V1\Update\UnzipUpdateController;
 use Crater\Http\Controllers\V1\Users\UsersController;
+use Crater\Http\Controllers\V1\Post\PostsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -337,5 +338,17 @@ Route::prefix('/v1')->group(function () {
         Route::post('/users/delete', [UsersController::class, 'delete']);
 
         Route::apiResource('/users', UsersController::class);
+
+
+        // Post
+        //----------------------------------
+        // Route::get('/posts', [PostsController::class, 'index']);
+        Route::resource('posts', PostsController::class);
+        
+        
     });
+    
+    
 });
+
+
