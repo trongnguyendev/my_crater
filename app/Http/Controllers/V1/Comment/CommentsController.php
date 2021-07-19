@@ -1,15 +1,13 @@
 <?php
 
-namespace Crater\Http\Controllers\V1\Post;
+namespace Crater\Http\Controllers\V1\Comment;
 
 use Crater\Http\Controllers\Controller;
-use Crater\Http\Requests\PostsRequest;
-use Crater\Http\Requests\PostUpdateRequest;
-use Crater\Http\Requests\PostUpdateThumbnailRequest;
-use Crater\Models\Post;
 use Illuminate\Http\Request;
+use Crater\Http\Requests\CommentsRequest;
+use Crater\Models\Comment;
 
-class PostsController extends Controller
+class CommentsController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,9 +16,9 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $posts = Post::all();
+        $comment = Comment::all();
         return response()->json([
-            'posts' => $posts,
+            'comments' => $comment,
         ]);
     }
 
@@ -32,7 +30,6 @@ class PostsController extends Controller
     public function create()
     {
         //
-        
     }
 
     /**
@@ -41,12 +38,12 @@ class PostsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PostsRequest $request)
+    public function store(CommentsRequest $request)
     {
-        $post = Post::createPost($request);
+        $comment = Comment::createComment($request);
 
         return response()->json([
-            'post' => $post
+            'comment' => $comment,
         ]);
     }
 
@@ -56,13 +53,9 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show($id)
     {
-        $post->with('comment');
-
-        return response()->json([
-            'post' => $post,
-        ]);
+        echo 'show';
     }
 
     /**
@@ -83,23 +76,9 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(PostUpdateRequest $request, Post $post)
+    public function update(Request $request, $id)
     {
-        $post = $post->updatePost($request);
-
-        return response()->json([
-            'post' => $post,
-        ]);
-    }
-
-    public function updateThumbnail(PostUpdateThumbnailRequest $request, Post $post)
-    {
-
-        $post = $post->updatePostthumbnail($request, $post);
-
-        return response()->json([
-            'post' => $post
-        ]);
+        //
     }
 
     /**
@@ -108,12 +87,8 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public function destroy($id)
     {
-        Post::destroy($post->id);
-
-        return response()->json([
-            'success' => true
-        ]);
+        //
     }
 }

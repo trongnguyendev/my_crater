@@ -61,6 +61,7 @@ use Crater\Http\Controllers\V1\Update\MigrateUpdateController;
 use Crater\Http\Controllers\V1\Update\UnzipUpdateController;
 use Crater\Http\Controllers\V1\Users\UsersController;
 use Crater\Http\Controllers\V1\Post\PostsController;
+use Crater\Http\Controllers\V1\Comment\CommentsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -340,11 +341,15 @@ Route::prefix('/v1')->group(function () {
         Route::apiResource('/users', UsersController::class);
 
 
-        // Post
+        // Posts
         //----------------------------------
-        // Route::get('/posts', [PostsController::class, 'index']);
         Route::resource('posts', PostsController::class);
-        
+        Route::post('posts/update-thumbnail/{post}', [PostsController::class, 'updateThumbnail']);
+
+
+        // Comments
+        //-----------------------------------
+        Route::resource('comments', CommentsController::class);
         
     });
     
