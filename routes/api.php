@@ -62,6 +62,7 @@ use Crater\Http\Controllers\V1\Update\UnzipUpdateController;
 use Crater\Http\Controllers\V1\Users\UsersController;
 use Crater\Http\Controllers\V1\Post\PostsController;
 use Crater\Http\Controllers\V1\Comment\CommentsController;
+use Crater\Http\Controllers\V1\Type\TypeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -350,6 +351,10 @@ Route::prefix('/v1')->group(function () {
         // Comments
         //-----------------------------------
         Route::resource('comments', CommentsController::class);
+
+        // Type
+        //-----------------------------------
+        Route::resource('types', TypeController::class);
         
     });
     

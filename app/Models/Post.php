@@ -17,9 +17,56 @@ class Post extends Model
         'title', 'thumbnail', 'content', 'view'
     ];
 
-    public function comment()
+    public function comments()
     {
-        return $this->hasMany(Comments::class);
+        return $this->hasMany(Comment::class);
+    }
+
+    public function scopeWhereOrder($query, $field, $orderBy)
+    {
+        $query->orderBy($field, $orderBy);
+    }
+
+    public function scopeWhereSearch($query, $search)
+    {
+        return $query->where('posts.title', 'LIKE', '%'. $search .'%');
+    }
+
+    public function scopeWhereContent($query, $content)
+    {
+        return $query->where('posts.content', 'LIKE', '%'. $content .'%');
+    }
+
+    public function scopePaginateData($query, $limit)
+    {
+        if($limit == 'all')
+        {
+            return collect(['data' => $query->get()]);
+        }
+        
+        return $query->paginate($limit);
+    }
+
+    public function scopeApplyFilters($query, array $filters)
+    {
+        $filters = collect($filters);
+
+        if($filters->get('search')) {
+            $query->whereSearch($filters->get('search'));
+        }
+
+        if($filters->get('content'))
+        {
+            $query->whereContent($filters->get('content'));
+        }
+
+        if($filters->get('orderByField') || $filters->get('orderBy') )
+        {
+            $field = $filters->get('orderByField') ? $filters->get('orderByField') : 'title';
+            $orderBy = $filters->get('orderBy') ? $filters->get('orderBy') : 'asc';
+            $query->whereOrder($field, $orderBy);
+        }
+
     }
 
     public static function createPost($request)

@@ -1,15 +1,13 @@
 <?php
 
-namespace Crater\Http\Controllers\V1\Post;
+namespace Crater\Http\Controllers\V1\Type;
 
 use Crater\Http\Controllers\Controller;
-use Crater\Http\Requests\PostsRequest;
-use Crater\Http\Requests\PostUpdateRequest;
-use Crater\Http\Requests\PostUpdateThumbnailRequest;
-use Crater\Models\Post;
+use Crater\Http\Requests\TypeRequest;
 use Illuminate\Http\Request;
+use Crater\Models\Type;
 
-class PostsController extends Controller
+class TypeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -18,21 +16,22 @@ class PostsController extends Controller
      */
     public function index(Request $request)
     {
+        
+
         $limit = $request->has('limit') ? $request->limit : 10;
 
-        $posts = Post::with('comments')
-            ->applyFilters($request->only([
+        $types = Type::applyFilters($request->only([
                 'search',
-                'content',
-                'orderByField',
                 'orderBy',
+                'orderByField'
             ]))
-            ->select('posts.*')
+            ->select('types.*')
             ->latest()
             ->paginateData($limit);
+
         return response()->json([
-            'posts' => $posts,
-            'postTotalCount' => Post::count(),
+            'types' => $types,
+            'TypeTotalCount' => Type::count()
         ]);
     }
 
@@ -44,7 +43,6 @@ class PostsController extends Controller
     public function create()
     {
         //
-        
     }
 
     /**
@@ -53,12 +51,12 @@ class PostsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(PostsRequest $request)
+    public function store(TypeRequest $request)
     {
-        $post = Post::createPost($request);
+        $type = Type::createType($request);
 
         return response()->json([
-            'post' => $post
+            'type', $type
         ]);
     }
 
@@ -68,12 +66,10 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Post $post)
+    public function show(Type $type)
     {
-        $post->with('comment');
-
         return response()->json([
-            'post' => $post,
+            'type' => $type
         ]);
     }
 
@@ -95,22 +91,12 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(PostUpdateRequest $request, Post $post)
+    public function update(TypeRequest $request, Type $type)
     {
-        $post = $post->updatePost($request);
+        $type = $type->updateType($request);
 
         return response()->json([
-            'post' => $post,
-        ]);
-    }
-
-    public function updateThumbnail(PostUpdateThumbnailRequest $request, Post $post)
-    {
-
-        $post = $post->updatePostthumbnail($request, $post);
-
-        return response()->json([
-            'post' => $post
+            'type' => $type,
         ]);
     }
 
@@ -120,9 +106,9 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public function destroy($id)
     {
-        Post::destroy($post->id);
+        Type::destroy($id);
 
         return response()->json([
             'success' => true
