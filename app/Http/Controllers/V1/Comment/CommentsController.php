@@ -14,11 +14,22 @@ class CommentsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $comment = Comment::all();
+        $limit = $request->has('limit')? $request->limit : 10;
+        
+        $comments = Comment::leftJoin('users', 'users.id', '=', 'comments.user_id')
+                ->applyFilter($request->only([
+                    'search',
+                    'orderBy',
+                    'orderByField'
+                ]))
+                ->select('comments.*', 'users.name as name_user_comment')
+                ->latest()
+                ->paginateData($limit);
         return response()->json([
-            'comments' => $comment,
+            'comments' => $comments,
+            'totalCommentCount' => Comment::count()
         ]);
     }
 

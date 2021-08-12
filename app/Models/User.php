@@ -159,6 +159,11 @@ class User extends Authenticatable implements HasMedia
         return $this->hasMany(UserSetting::class, 'user_id');
     }
 
+    public function comments()
+    {
+        return $this->hasMany(comment::class);
+    }
+
     /**
      * Override the mail body for reset password notification mail.
      */
