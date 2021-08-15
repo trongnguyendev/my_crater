@@ -64,9 +64,11 @@ class CommentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Comment $comment)
     {
-        echo 'show';
+        return response()->json([
+            'comment' => $comment
+        ]);
     }
 
     /**
@@ -87,9 +89,13 @@ class CommentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CommentsRequest $request, Comment $comment)
     {
-        //
+        $comment = $comment->updateComment($request);
+
+        return response()->json([
+            'comment' => $comment
+        ]);
     }
 
     /**
@@ -98,8 +104,12 @@ class CommentsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Comment $comment)
     {
-        //
+        Comment::destroy($comment->id);
+
+        return response()->json([
+            'success' => true,
+        ]);
     }
 }

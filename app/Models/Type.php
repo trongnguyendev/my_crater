@@ -15,6 +15,11 @@ class Type extends Model
         'name', 'description'
     ];
 
+    public function posts()
+    {
+        return $this->belongsToMany(Post::class, 'type_posts');
+    }
+
     public function scopeWhereSearch($query, $search)
     {
         return $query->where('types.name', 'LIKE', '%'. $search .'$');

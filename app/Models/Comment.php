@@ -15,6 +15,8 @@ class Comment extends Model
         'post_id',
     ];
 
+    public $timestamps = false;
+
     public function Post()
     {
         return $this->belongsTo(Post::class);

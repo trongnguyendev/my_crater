@@ -20,7 +20,7 @@ class PostsController extends Controller
     {
         $limit = $request->has('limit') ? $request->limit : 10;
 
-        $posts = Post::with('comments')
+        $posts = Post::with(['comments', 'types'])
             ->applyFilters($request->only([
                 'search',
                 'content',
@@ -57,6 +57,13 @@ class PostsController extends Controller
     {
         $post = Post::createPost($request);
 
+        if($request->has('types') && isset($post))
+        {
+            $types = explode(",", $request->types);
+
+            $post->types()->attach($types);
+        }
+
         return response()->json([
             'post' => $post
         ]);
@@ -70,7 +77,7 @@ class PostsController extends Controller
      */
     public function show(Post $post)
     {
-        $post->with('comment');
+        $post = $post->load(['comments', 'types']);
 
         return response()->json([
             'post' => $post,
@@ -98,6 +105,13 @@ class PostsController extends Controller
     public function update(PostUpdateRequest $request, Post $post)
     {
         $post = $post->updatePost($request);
+
+        if($request->has('types') && isset($post))
+        {
+            $types = explode(",", $request->types);
+
+            $post->types()->sync($types);
+        }
 
         return response()->json([
             'post' => $post,

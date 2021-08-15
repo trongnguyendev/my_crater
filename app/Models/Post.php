@@ -22,6 +22,11 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
+    public function types()
+    {
+        return $this->belongsToMany(Type::class, 'type_posts');
+    }
+
     public function scopeWhereOrder($query, $field, $orderBy)
     {
         $query->orderBy($field, $orderBy);
@@ -72,7 +77,7 @@ class Post extends Model
     public static function createPost($request)
     {
         $data = $request->validated();
-
+        
         $name_thumbnail = self::generateNameThumbnail($data['thumbnail']);
 
         $thumbnail = self::uploadThumbnail($data['thumbnail'], $name_thumbnail);
