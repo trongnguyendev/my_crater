@@ -27,6 +27,7 @@ class CommentsController extends Controller
                 ->select('comments.*', 'users.name as name_user_comment')
                 ->latest()
                 ->paginateData($limit);
+                
         return response()->json([
             'comments' => $comments,
             'totalCommentCount' => Comment::count()

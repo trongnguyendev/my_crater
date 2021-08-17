@@ -30,6 +30,7 @@ class PostsController extends Controller
             ->select('posts.*')
             ->latest()
             ->paginateData($limit);
+            
         return response()->json([
             'posts' => $posts,
             'postTotalCount' => Post::count(),

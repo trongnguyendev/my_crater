@@ -80,6 +80,11 @@ import CustomFieldsIndex from './views/settings/CustomFieldsSetting.vue'
 import PaymentMode from './views/settings/PaymentsModeSetting.vue'
 import Wizard from './views/wizard/Wizard.vue'
 
+// Posts
+// Items
+import PostsIndex from './views/posts/Index.vue'
+import PostCreate from './views/posts/Create.vue'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -400,6 +405,22 @@ const routes = [
             component: FileDisk,
           },
         ],
+      },
+
+      // Posts
+      {
+        path: 'posts',
+        component: PostsIndex,
+      },
+      {
+        path: 'posts/create',
+        name: 'posts.create',
+        component: PostCreate,
+      },
+      {
+        path: 'posts/:id/edit',
+        name: 'posts.edit',
+        component: PostCreate,
       },
     ],
   },

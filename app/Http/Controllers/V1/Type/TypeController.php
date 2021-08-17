@@ -31,7 +31,7 @@ class TypeController extends Controller
 
         return response()->json([
             'types' => $types,
-            'TypeTotalCount' => Type::count()
+            'typeTotalCount' => Type::count()
         ]);
     }
 
