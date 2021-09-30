@@ -23,19 +23,19 @@ export default {
   //   state.items[pos] = data.item
   // },
 
-  // [types.DELETE_ITEM](state, id) {
-  //   let index = state.items.findIndex((item) => item.id === id)
-  //   state.items.splice(index, 1)
-  // },
+  [types.DELETE_POST](state, id) {  
+    let index = state.posts.findIndex((post) => post.id === id)
+    state.posts.splice(index, 1)
+  },
 
-  // [types.DELETE_MULTIPLE_ITEMS](state, selectedItems) {
-  //   selectedItems.forEach((item) => {
-  //     let index = state.items.findIndex((_item) => _item.id === item.id)
-  //     state.items.splice(index, 1)
-  //   })
+  [types.DELETE_MULTIPLE_POSTS](state, selectedPosts) {
+    selectedPosts.forEach((item) => {
+      let index = state.posts.findIndex((_item) => _item.id === item.id)
+      state.posts.splice(index, 1)
+    })
 
-  //   state.selectedItems = []
-  // },
+    state.selectedPosts = []
+  },
 
   [types.SET_SELECTED_POSTS](state, data) {
     state.selectedPosts = data

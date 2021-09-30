@@ -81,7 +81,6 @@ import PaymentMode from './views/settings/PaymentsModeSetting.vue'
 import Wizard from './views/wizard/Wizard.vue'
 
 // Posts
-// Items
 import PostsIndex from './views/posts/Index.vue'
 import PostCreate from './views/posts/Create.vue'
 

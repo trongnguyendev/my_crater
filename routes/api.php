@@ -344,6 +344,7 @@ Route::prefix('/v1')->group(function () {
 
         // Posts
         //----------------------------------
+        Route::post('/posts/delete', [PostsController::class, 'destroy']);
         Route::resource('posts', PostsController::class);
         Route::post('posts/update-thumbnail/{post}', [PostsController::class, 'updateThumbnail']);
 

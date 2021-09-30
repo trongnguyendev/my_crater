@@ -1,9 +1,9 @@
 <template>
   <base-page>
-    <sw-page-header :title="$t('items.title')">
+    <sw-page-header :title="$t('posts.title')">
       <sw-breadcrumb slot="breadcrumbs">
         <sw-breadcrumb-item :title="$t('general.home')" to="dashboard" />
-        <sw-breadcrumb-item :title="$tc('items.item', 2)" to="#" active />
+        <sw-breadcrumb-item :title="$tc('posts.post', 2)" to="#" active />
       </sw-breadcrumb>
 
       <template slot="actions">
@@ -19,53 +19,49 @@
 
         <sw-button
           tag-name="router-link"
-          to="items/create"
+          to="posts/create"
           variant="primary"
           size="lg"
           class="ml-4"
         >
           <plus-icon class="w-6 h-6 mr-1 -ml-2" />
-          {{ $t('items.add_item') }}
+          {{ $t('posts.add_post') }}
         </sw-button>
       </template>
     </sw-page-header>
 
     <slide-y-up-transition>
       <sw-filter-wrapper v-show="showFilters">
-        <sw-input-group :label="$tc('items.name')" class="flex-1 mt-2 ml-0">
+        <sw-input-group :label="$tc('posts.title')" class="flex-1 mt-2 ml-0">
           <sw-input
-            v-model="filters.name"
+            v-model="filters.title"
             type="text"
-            name="name"
+            name="title"
             class="mt-2"
             autocomplete="off"
           />
         </sw-input-group>
 
         <sw-input-group
-          :label="$tc('items.unit')"
-          class="flex-1 mt-2 ml-0 lg:ml-6"
-        >
-          <sw-select
-            v-model="filters.unit"
-            :options="itemUnits"
-            :searchable="true"
-            :show-labels="false"
-            :placeholder="$t('items.select_a_unit')"
-            class="mt-2"
-            label="name"
-            autocomplete="off"
-          />
-        </sw-input-group>
-
-        <sw-input-group
-          :label="$tc('items.price')"
+          :label="$tc('posts.thumbnail')"
           class="flex-1 mt-2 ml-0 lg:ml-6"
         >
           <sw-input
-            v-model="filters.price"
+            v-model="filters.thumbnail"
             type="text"
-            name="name"
+            name="thumbnail"
+            class="mt-2"
+            autocomplete="off"
+          />
+        </sw-input-group>
+        <sw-input-group
+          :label="$tc('posts.content')"
+          class="flex-1 mt-2 ml-0 lg:ml-6"
+        >
+          <sw-input
+            v-model="filters.content"
+            type="content"
+            name=""
             class="mt-2"
             autocomplete="off"
           />
@@ -83,22 +79,23 @@
 
     <sw-empty-table-placeholder
       v-show="showEmptyScreen"
-      :title="$t('items.no_items')"
-      :description="$t('items.list_of_items')"
+      :title="$t('posts.no_posts')"
+      :description="$t('posts.list_of_posts')"
     >
       <satellite-icon class="mt-5 mb-4" />
 
       <sw-button
         slot="actions"
         tag-name="router-link"
-        to="/admin/items/create"
+        to="/admin/posts/create"
         size="lg"
         variant="primary-outline"
       >
         <plus-icon class="w-6 h-6 mr-1 -ml-2" />
-        {{ $t('items.add_new_item') }}
+        {{ $t('posts.add_new_post') }}
       </sw-button>
     </sw-empty-table-placeholder>
+
 
     <div v-show="!showEmptyScreen" class="relative table-container">
       <div
@@ -127,13 +124,14 @@
         </sw-transition>
       </div>
 
+
       <div class="absolute z-10 items-center pl-4 mt-2 select-none md:mt-12">
         <sw-checkbox
           v-model="selectAllFieldStatus"
           variant="primary"
           size="sm"
           class="hidden md:inline"
-          @change="selectAllItems"
+          @change="selectAllPosts"
         />
 
         <sw-checkbox
@@ -171,45 +169,29 @@
         <!-- [start] [name item] -->
         <sw-table-column 
         :sortable="true" 
-        :label="$t('items.name')" 
-        show="name">
+        :label="$t('posts.title')" 
+        show="title">
           <template slot-scope="row">
-            <span>{{ $t('items.name') }}</span>
+            <span>{{ $t('posts.title') }}</span>
             <router-link
-              :to="{ path: `items/${row.id}/edit` }"
+              :to="{ path: `posts/${row.id}/edit` }"
               class="font-medium text-primary-500"
             >
-              {{ row.name }}
+              {{ row.title }}
             </router-link>
           </template>
         </sw-table-column>
         <!-- [end] [name item] -->
 
-        <!-- [start] [unit item] -->
-        <sw-table-column
-          :sortable="true"
-          :label="$t('items.unit')"
-          show="unit_name">
-          <template slot-scope="row">
-            <span>{{ $t('items.unit') }}</span>
-
-            <span>
-              {{ row.unit_name ? row.unit_name : $t('items.not_selected') }}
-            </span>
-          </template>
-        </sw-table-column>
-        <!-- [end] [unit item] -->
-
         <!-- [start] [price item] -->
         <sw-table-column
           :sortable="true"
-          :label="$t('items.price')"
-          show="price"
+          :label="$t('posts.thumbnail')"
+          show="thumbnail"
         >
           <template slot-scope="row">
-            <span> {{ $t('items.price') }} </span>
-
-            <div v-html="$utils.formatMoney(row.price, defaultCurrency)" />
+            <span> {{ $t('post.thumbnail') }} </span>
+            <span>{{ row.thumbnail }}</span>
           </template>
         </sw-table-column>
         <!-- [end] [price item] -->
@@ -218,12 +200,12 @@
         
         <sw-table-column
           :sortable="true"
-          :label="$t('items.discount')"
-          show="discount"
+          :label="$t('posts.content')"
+          show="content"
         >
           <template slot-scope="row">
-            <span> {{ $t('items.discount') }} </span>
-            <div v-html="$utils.formatMoney(row.discount, defaultCurrency)" />
+            <span> {{ $t('posts.content') }} </span>
+            <span>{{ row.content }}</span>
           </template>
         </sw-table-column>
         <!-- [end] [show discount] [27-06] -->
@@ -231,12 +213,12 @@
         <!-- [start][show description][24-06] -->
         <sw-table-column
           :sortable="true"
-          :label="$t('items.description')"
-          show="description"
+          :label="$t('posts.view')"
+          show="view"
         >
           <template slot-scope="row">
-            <span> {{ $t('items.description') }} </span>
-            <span>{{ row.description }}</span>
+            <span> {{ $t('posts.view') }} </span>
+            <span>{{ row.view }}</span>
           </template>
         </sw-table-column>
         <!-- [end][show description][24-06] -->
@@ -244,7 +226,7 @@
         <!-- [start] [added on item] -->
         <sw-table-column
           :sortable="true"
-          :label="$t('items.added_on')"
+          :label="$t('posts.added_on')"
           sort-as="created_at"
           show="formattedCreatedAt"
         />
@@ -256,7 +238,7 @@
           cell-class="action-dropdown"
         >
           <template slot-scope="row">
-            <span> {{ $t('items.action') }} </span>
+            <span> {{ $t('posts.action') }} </span>
 
             <sw-dropdown>
               <dot-icon slot="activator" />
@@ -269,7 +251,7 @@
                 {{ $t('general.edit') }}
               </sw-dropdown-item>
 
-              <sw-dropdown-item @click="removeItems(row.id)">
+              <sw-dropdown-item @click="removePost(row.id)">
                 <trash-icon class="h-5 mr-3 text-gray-600" />
                 {{ $t('general.delete') }}
               </sw-dropdown-item>
@@ -315,6 +297,7 @@ export default {
         title: '',
         thumbnail: '',
         content: '',
+        view: ''
       },
     }
   },
@@ -322,9 +305,9 @@ export default {
   computed: {
     ...mapGetters('post', [
       'posts',
+      'selectAllField',
       'selectedPosts',
       'totalPosts',
-      'selectAllField',
     ]),
 
     ...mapGetters('company', ['defaultCurrency']),
@@ -339,9 +322,10 @@ export default {
 
     selectField: {
       get: function () {
-        return this.selectedItems
+        return this.selectedPosts
       },
       set: function (val) {
+        console.log(val)
         this.selectPost(val)
       },
     },
@@ -369,19 +353,18 @@ export default {
 
   destroyed() {
     if (this.selectAllField) {
-      this.selectAllItems()
+      this.selectAllPosts()
     }
   },
 
   methods: {
-    ...mapActions('item', [
-      'fetchItems',
-      'selectAllItems',
-      'selectItem',
-      'deleteItem',
-      'deleteMultipleItems',
+    ...mapActions('post', [
+      'fetchPosts',
+      'selectAllPosts',
+      'selectPost',
       'setSelectAllState',
-      'fetchItemUnits',
+      'deletePost',
+      'deleteMultiplePosts'
     ]),
 
     ...mapActions('notification', ['showNotification']),
@@ -392,19 +375,19 @@ export default {
 
     async fetchData({ page, filter, sort }) {
       let data = {
+        limit: '4',
         search: this.filters.title !== null ? this.filters.title : '',
         orderByField: sort.fieldName || 'created_at',
         orderBy: sort.order || 'desc',
         page,
       }
-
       this.isRequestOngoing = true
       let response = await this.fetchPosts(data)
       this.isRequestOngoing = false
       return {
-        data: response.data.items.data,
+        data: response.data.posts.data,
         pagination: {
-          totalPages: response.data.items.last_page,
+          totalPages: response.data.posts.last_page,
           currentPage: page,
         },
       }
@@ -430,11 +413,10 @@ export default {
       if (this.showFilters) {
         this.clearFilter()
       }
-
       this.showFilters = !this.showFilters
     },
 
-    async removePosts(id) {
+    async removePost(id) {
       this.id = id
       this.$swal({
         title: this.$t('general.are_you_sure'),
@@ -506,5 +488,9 @@ export default {
       })
     },
   },
+
+  created() {
+    // console.log(this.posts)
+  }
 }
 </script>

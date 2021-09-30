@@ -4,16 +4,16 @@
     <sw-page-header :title="pageTitle" class="mb-3">
       <sw-breadcrumb slot="breadcrumbs">
         <sw-breadcrumb-item :title="$t('general.home')" to="/admin/dashboard" />
-        <sw-breadcrumb-item :title="$tc('items.item', 2)" to="/admin/items" />
+        <sw-breadcrumb-item :title="$tc('posts.post', 2)" to="/admin/posts" />
         <sw-breadcrumb-item
-          v-if="$route.name === 'items.edit'"
-          :title="$t('items.edit_item')"
+          v-if="$route.name === 'posts.edit'"
+          :title="$t('posts.edit_post')"
           to="#"
           active
         />
         <sw-breadcrumb-item
           v-else
-          :title="$t('items.new_item')"
+          :title="$t('posts.new_post')"
           to="#"
           active
         />
@@ -23,116 +23,57 @@
 
     <div class="grid grid-cols-12">
       <div class="col-span-12 md:col-span-6">
-        <form action="" @submit.prevent="submitItem">
+        <form action="" @submit.prevent="submitPost">
 
           <sw-card>
-            <!-- input name -->
+            <!-- input title -->
             <sw-input-group
-              :label="$t('items.name')"
-              :error="nameError"
+              :label="$t('posts.title')"
+              :error="titleError"
               class="mb-4"
               required
             >
               <sw-input
-                v-model.trim="formData.name"
-                :invalid="$v.formData.name.$error"
+                v-model.trim="formData.title"
+                :invalid="$v.formData.title.$error"
                 class="mt-2"
                 focus
                 type="text"
-                name="name"
-                @input="$v.formData.name.$touch()"
+                name="title"
+                @input="$v.formData.title.$touch()"
               />
             </sw-input-group>
-            <!-- end input name -->
+            <!-- end input title -->
 
-            <!-- input price item -->
+            <!-- input thumbnail item -->
             <sw-input-group
-              :label="$t('items.price')"
-              :error="priceError"
+              :label="$t('posts.thumbnail')"
+              :error="thumbnailError"
               class="mb-4"
               required
             >
-              <sw-money
-                v-model.trim="price"
-                :invalid="$v.formData.price.$error"
-                :currency="defaultCurrencyForInput"
-                class="relative w-full focus:border focus:border-solid focus:border-primary-500"
-                @input="$v.formData.price.$touch()"
-              />
-            </sw-input-group>
-            <!-- end input price item -->
-
-            <!-- [start] [add input discount] [27-06] -->
-            <sw-input-group
-              :label="$t('items.discount')"
-              :error="priceError"
-              class="mb-4"
-              required
-            >
-              <sw-money
-                v-model.trim="discount"
-                :invalid="$v.formData.discount.$error"
-                :currency="defaultCurrencyForInput"
-                class="relative w-full focus:border focus:border-solid focus:border-primary-500"
-                @input="$v.formData.discount.$touch()"
-              />
-            </sw-input-group>
-            <!-- [end] [add input discount] [27-06] -->
-
-            <sw-input-group :label="$t('items.unit')" class="mb-4">
-              <sw-select
-                v-model="formData.unit"
-                :options="itemUnits"
-                :searchable="true"
-                :show-labels="false"
-                :placeholder="$t('items.select_a_unit')"
+              <sw-input
+                v-model.trim="formData.thumbnail"
+                :invalid="$v.formData.thumbnail.$error"
                 class="mt-2"
-                label="name"
-              >
-                <div
-                  slot="afterList"
-                  class="flex items-center justify-center w-full px-6 py-3 text-base bg-gray-200 cursor-pointer text-primary-400"
-                  @click="addItemUnit"
-                >
-                  <shopping-cart-icon
-                    class="h-5 mr-2 -ml-2 text-center text-primary-400"
-                  />
-
-                  <label class="ml-2 text-sm leading-none text-primary-400">{{
-                    $t('settings.customization.items.add_item_unit')
-                  }}</label>
-                </div>
-              </sw-select>
-            </sw-input-group>
-
-            <sw-input-group
-              v-if="isTaxPerItem"
-              :label="$t('items.taxes')"
-              class="mb-4"
-            >
-              <sw-select
-                v-model="formData.taxes"
-                :options="getTaxTypes"
-                :searchable="true"
-                :show-labels="false"
-                :allow-empty="true"
-                :multiple="true"
-                class="mt-2"
-                track-by="tax_type_id"
-                label="tax_name"
+                focus
+                type="file"
+                name="thumbnail"
+                @input="$v.formData.thumbnail.$touch()"
               />
             </sw-input-group>
-
+            <!-- end input thumbnail item -->         
+            
             <sw-input-group
-              :label="$t('items.description')"
-              :error="descriptionError"
+              :label="$t('posts.content')"
+              :error="contentError"
               class="mb-4"
             >
               <sw-textarea
-                v-model="formData.description"
+                v-model="formData.content"
                 rows="2"
-                name="description"
-                @input="$v.formData.description.$touch()"
+                name="content"
+                @input="$v.formData.content.$touch()"
               />
             </sw-input-group>
 
@@ -144,7 +85,7 @@
                 class="flex justify-center w-full md:w-auto"
               >
                 <save-icon v-if="!isLoading" class="mr-2 -ml-1" />
-                {{ isEdit ? $t('items.update_item') : $t('items.save_item') }}
+                {{ isEdit ? $t('posts.update_post') : $t('posts.save_post') }}
               </sw-button>
             </div>
           </sw-card>
@@ -180,13 +121,9 @@ export default {
       taxPerItem: '',
 
       formData: {
-        name: '',
-        description: '',
-        price: '',
-        discount: '',
-        unit_id: null,
-        unit: null,
-        taxes: [],
+        title: '',
+        thumbnail: '',
+        content: '',
       },
 
       money: {
@@ -206,35 +143,18 @@ export default {
 
     ...mapGetters('taxType', ['taxTypes']),
 
-    price: {
-      get: function () {
-        return this.formData.price / 100
-      },
-      set: function (newValue) {
-        this.formData.price = Math.round(newValue * 100)
-      },
-    },
-
-    discount: {
-      get: function() {
-        return this.formData.discount / 100
-      },
-      set: function (newValue) {
-        this.formData.discount = Math.round(newValue * 100)
-      },
-    },
 
     pageTitle() {
-      if (this.$route.name === 'items.edit') {
-        return this.$t('items.edit_item')
+      if (this.$route.name === 'posts.edit') {
+        return this.$t('posts.edit_post')
       }
-      return this.$t('items.new_item')
+      return this.$t('posts.new_post')
     },
 
     ...mapGetters('taxType', ['taxTypes']),
 
     isEdit() {
-      if (this.$route.name === 'items.edit') {
+      if (this.$route.name === 'posts.edit') {
         return true
       }
       return false
@@ -254,68 +174,33 @@ export default {
       })
     },
 
-    nameError() {
-      if (!this.$v.formData.name.$error) {
+    titleError() {
+      if (!this.$v.formData.title.$error) {
         return ''
       }
 
-      if (!this.$v.formData.name.required) {
+      if (!this.$v.formData.title.required) {
         return this.$t('validation.required')
       }
 
-      if (!this.$v.formData.name.minLength) {
-        return this.$tc(
-          'validation.name_min_length',
-          this.$v.formData.name.$params.minLength.min,
-          { count: this.$v.formData.name.$params.minLength.min }
-        )
-      }
     },
 
-    priceError() {
-      if (!this.$v.formData.price.$error) {
+    thumbnailError() {
+      if (!this.$v.formData.thumbnail.$error) {
         return ''
       }
 
-      if (!this.$v.formData.price.required) {
+      if (!this.$v.formData.thumbnail.required) {
         return this.$t('validation.required')
       }
-
-      if (!this.$v.formData.price.maxLength) {
-        return this.$t('validation.price_maxlength')
-      }
-
-      if (!this.$v.formData.price.minValue) {
-        return this.$t('validation.price_minvalue')
-      }
     },
 
-    // [start] [validation discount] [27-06]
-    discountError() {
-      if(!this.$v.formData.discount.$error) {
+    contentError() {
+      if (!this.$v.formData.content.$error) {
         return ''
       }
 
-      if(!this.$v.formData.discount.required) {
-        return this.$t('validation.required')
-      }
-
-      if (!this.$v.formData.discount.maxLength) {
-        return this.$t('validation.discount_maxlength')
-      }
-      
-      if (!this.$v.formData.discount.minValue) {
-        return this.$t('validation.discount_minvalue')
-      }
-    },
-    // [end] [validation discount] [27-06]
-
-    descriptionError() {
-      if (!this.$v.formData.description.$error) {
-        return ''
-      }
-
-      if (!this.$v.formData.description.maxLength) {
+      if (!this.$v.formData.content.maxLength) {
         return this.$t('validation.description_maxlength')
       }
     },
@@ -333,38 +218,25 @@ export default {
 
   validations: {
     formData: {
-      name: {
+      title: {
         required,
-        minLength: minLength(3),
       },
 
-      price: {
+      thumbnail: {
         required,
-        numeric,
-        maxLength: maxLength(20),
-        minValue: minValue(0.1),
       },
-      // [start] [validation discount] [27-06]
-      discount: {
-        required,
-        numeric,
-        maxLength: maxLength(20),
-        minValue: minValue(0.1),
-      },
-      // [start] [validation discount] [27-06]
 
-      description: {
-        maxLength: maxLength(65000),
+      content: {
+        required
       },
     },
   },
 
   methods: {
-    ...mapActions('item', [
-      'addItem',
-      'fetchItem',
-      'updateItem',
-      'fetchItemUnits',
+    ...mapActions('post', [
+      'addPost',
+      // 'fetchItem',
+      // 'updateItem',
     ]),
 
     ...mapActions('taxType', ['fetchTaxTypes']),
@@ -393,31 +265,19 @@ export default {
 
         this.fractional_price = response.data.item.price
 
-        if (this.formData.unit_id) {
-          await this.fetchItemUnits({ limit: 'all' })
-          this.formData.unit = this.itemUnits.find(
-            (_unit) => response.data.item.unit_id === _unit.id
-          )
-        }
-
-        if (this.formData.taxes) {
-          await this.fetchTaxTypes({ limit: 'all' })
-          this.formData.taxes = response.data.item.taxes.map((tax) => {
-            return { ...tax, tax_name: tax.name + '(' + tax.percent + '%)' }
-          })
-        }
+       
       } else {
-        this.fetchItemUnits({ limit: 'all' })
         this.fetchTaxTypes({ limit: 'all' })
       }
     },
 
-    async submitItem() {
+    async submitPost() {
       this.$v.formData.$touch()
 
       if (this.$v.$invalid) {
         return false
       }
+
 
       if (this.formData.unit) {
         this.formData.unit_id = this.formData.unit.id
@@ -426,25 +286,14 @@ export default {
       let response
       this.isLoading = true
 
-      // [start] [update or add item] [27-06]
       if (this.isEdit) {
         response = await this.updateItem(this.formData)
       } else {
         let data = {
           ...this.formData,
-          taxes: this.formData.taxes.map((tax) => {
-            return {
-              tax_type_id: tax.id,
-              amount: (this.formData.price * tax.percent) / 100,
-              percent: tax.percent,
-              name: tax.name,
-              collective_tax: 0,
-            }
-          }),
         }
-        response = await this.addItem(data)
+        response = await this.addPost(data)
       }
-      // [start] [update or add item] [27-06]
 
 
       if (response.data) {
@@ -453,9 +302,9 @@ export default {
         if (!this.isEdit) {
           this.showNotification({
             type: 'success',
-            message: this.$tc('items.created_message'),
+            message: this.$tc('posts.created_message'),
           })
-          this.$router.push('/admin/items')
+          this.$router.push('/admin/posts')
           return true
         } else {
           this.showNotification({

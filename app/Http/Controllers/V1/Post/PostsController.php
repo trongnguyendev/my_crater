@@ -100,7 +100,7 @@ class PostsController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  Post  $post   
      * @return \Illuminate\Http\Response
      */
     public function update(PostUpdateRequest $request, Post $post)
@@ -135,12 +135,12 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public function destroy(Request $request)
     {
-        Post::destroy($post->id);
+        
 
         return response()->json([
-            'success' => true
+            'success' => Post::destroy($request->ids)
         ]);
     }
 }

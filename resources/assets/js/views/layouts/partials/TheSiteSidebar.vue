@@ -126,7 +126,7 @@ export default {
             route: '/admin/types'
           },
           {
-            title: 'Posts',
+            title: 'navigation.posts',
             icon: 'calculator-icon',
             route: '/admin/posts'
           },

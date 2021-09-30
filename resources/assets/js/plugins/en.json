@@ -10,7 +10,8 @@
     "reports": "Reports",
     "settings": "Settings",
     "logout": "Logout",
-    "users": "Users"
+    "users": "Users",
+    "posts": "Posts"
   },
   "general": {
     "add_company": "Add Company",
@@ -223,6 +224,26 @@
     "updated_message": "Item updated successfully",
     "deleted_message": "Item deleted successfully | Items deleted successfully"
   },
+
+  "posts": {
+    "title": "Posts",
+    "post" : "Post",
+    "no_posts": "No posts yet!",
+    "list_of_posts": "This section will contain the list of posts.",
+    "add_post": "Add Post",
+    "add_new_post": "Add New Post",
+    "thumbnail": "Thumbnail",
+    "content": "Content",
+    "view" : "View",
+    "added_on" : "Added On",
+    "action" : "Actions",
+    "new_post": "New Post",
+    "edit_post": "Edit Post",
+    "update_post": "Update Post",
+    "save_post": "Save Post",
+    "created_message": "Post created successfully"
+  },
+
   "estimates": {
     "title": "Estimates",
     "estimate": "Estimate | Estimates",
