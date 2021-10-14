@@ -11,11 +11,7 @@ use Illuminate\Http\Request;
 
 class PostsController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function index(Request $request)
     {
         $limit = $request->has('limit') ? $request->limit : 10;
@@ -37,32 +33,21 @@ class PostsController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
+    
     public function create()
     {
         //
         
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+    
     public function store(PostsRequest $request)
     {
         $post = Post::createPost($request);
 
         if($request->has('types') && isset($post))
         {
-            $types = explode(",", $request->types);
-
-            $post->types()->attach($types);
+            $post->types()->attach($request->types);
         }
 
         return response()->json([
@@ -70,12 +55,6 @@ class PostsController extends Controller
         ]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function show(Post $post)
     {
         $post = $post->load(['comments', 'types']);
@@ -85,60 +64,39 @@ class PostsController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function edit($id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  Post  $post   
-     * @return \Illuminate\Http\Response
-     */
     public function update(PostUpdateRequest $request, Post $post)
     {
         $post = $post->updatePost($request);
 
         if($request->has('types') && isset($post))
         {
-            $types = explode(",", $request->types);
-
-            $post->types()->sync($types);
+            $post->types()->sync($request->types);
         }
-
-        return response()->json([
-            'post' => $post,
-        ]);
-    }
-
-    public function updateThumbnail(PostUpdateThumbnailRequest $request, Post $post)
-    {
-
-        $post = $post->updatePostthumbnail($request, $post);
 
         return response()->json([
             'post' => $post
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+    public function updateThumbnail(Request $request, Post $post)
+    {
+
+        $post = $post->updatePostthumbnail($request->thumbnail, $post);
+        
+        return response()->json([
+            'post' => $post
+        ]);
+    }
+
+
     public function destroy(Request $request)
     {
-        
-
+    
         return response()->json([
             'success' => Post::destroy($request->ids)
         ]);

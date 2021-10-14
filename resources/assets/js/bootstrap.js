@@ -76,7 +76,7 @@ window.axios.defaults.withCredentials = true
 window.Ls = Ls
 
 window.axios.defaults.headers.common = {
-  'X-Requested-With': 'XMLHttpRequest',
+  'X-Requested-With': 'XMLHttpRequest'
 }
 
 /**

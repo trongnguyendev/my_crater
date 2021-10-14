@@ -21,62 +21,80 @@
     </sw-page-header>
     <!-- End Page Header -->
 
-    <div class="grid grid-cols-12">
-      <div class="col-span-12 md:col-span-6">
-        <form action="" @submit.prevent="submitPost">
+    <div class="">
+      <form action="" @submit.prevent="submitPost">
 
           <sw-card>
-            <!-- input title -->
-            <sw-input-group
-              :label="$t('posts.title')"
-              :error="titleError"
-              class="mb-4"
-              required
-            >
-              <sw-input
-                v-model.trim="formData.title"
-                :invalid="$v.formData.title.$error"
-                class="mt-2"
-                focus
-                type="text"
-                name="title"
-                @input="$v.formData.title.$touch()"
-              />
-            </sw-input-group>
-            <!-- end input title -->
 
-            <!-- input thumbnail item -->
-            <sw-input-group
-              :label="$t('posts.thumbnail')"
-              :error="thumbnailError"
-              class="mb-4"
-              required
-            >
-              <sw-input
-                v-model.trim="formData.thumbnail"
-                :invalid="$v.formData.thumbnail.$error"
-                class="mt-2"
-                focus
-                type="file"
-                name="thumbnail"
-                @input="$v.formData.thumbnail.$touch()"
-              />
-            </sw-input-group>
-            <!-- end input thumbnail item -->         
+            <div class="grid-cols-12 gap-8 mt-6 mb-8 lg:grid">
+              <div class="col-span-8 pr-0 col-span-5 pr-0">
+                <!-- input title -->
+                <sw-input-group
+                  :label="$t('posts.title')"
+                  :error="titleError"
+                  class="mb-4"
+                  required
+                >
+                  <sw-input
+                    v-model.trim="formData.title"
+                    :invalid="$v.formData.title.$error"
+                    class="mt-2"
+                    focus
+                    type="text"
+                    name="title"
+                    @input="$v.formData.title.$touch()"
+                  />
+                </sw-input-group>
+                <!-- end input title -->
+
+                <sw-input-group
+                :label="$t('posts.content')"
+                :error="contentError"
+                  class="mb-4"
+                >
+
+                  <sw-editor
+                    v-model="formData.content"
+                    :set-editor="formData.content"
+                    :placeholder="placeholder"
+                    variant="header-editor"
+                    input-class="border-none"
+                    class="text-area-field"
+                    name="content"
+                    @input="$v.formData.content.$touch()"
+                  />
+                </sw-input-group>
+              </div>
+              <div class="grid-cols-1 col-span-4 gap-4 mt-8 lg:gap-6 lg:mt-0 lg:grid-cols-2">
+                <sw-input-group
+                class="mb-4"
+                :label="$t('types.type')"
+                >
+                  <sw-checkbox 
+                    v-for="type in getTypesPost"
+                    :key="type.id"
+                    :label="type.name"
+                    :value="type.id"
+                    :id="type.id"
+                    name="typePost"
+                    v-model="formData.types"
+                  />
+                </sw-input-group>
+
+                <sw-input-group
+                  :label="$t('posts.thumbnail')"
+                  :error="thumbnailError"
+                  class="mb-4"
+                  required
+                >
+                  <img v-if="$route.name === 'posts.edit'" :src="'/storage/post/' + formData.thumbnail"  alt="">                
+
+                  <input type="file" ref="file" name="file" id="" class="mt-4" @change="uploadFIle">
+                </sw-input-group>
+
+              </div>
+            </div>
             
-            <sw-input-group
-              :label="$t('posts.content')"
-              :error="contentError"
-              class="mb-4"
-            >
-              <sw-textarea
-                v-model="formData.content"
-                rows="2"
-                name="content"
-                @input="$v.formData.content.$touch()"
-              />
-            </sw-input-group>
-
             <div class="mb-4">
               <sw-button
                 :loading="isLoading"
@@ -90,7 +108,6 @@
             </div>
           </sw-card>
         </form>
-      </div>
     </div>
   </base-page>
 </template>
@@ -115,35 +132,22 @@ export default {
   data() {
     return {
       isLoading: false,
-      title: 'Add Item',
-      units: [],
-      taxes: [],
-      taxPerItem: '',
+      title: 'Add Post',
 
       formData: {
         title: '',
         thumbnail: '',
         content: '',
+        types: []
       },
 
-      money: {
-        decimal: '.',
-        thousands: ',',
-        prefix: '$ ',
-        precision: 2,
-        masked: false,
-      },
+      placeholder: 'Please input content'
     }
   },
-
   computed: {
-    ...mapGetters('company', ['defaultCurrencyForInput']),
-
-    ...mapGetters('item', ['itemUnits']),
-
-    ...mapGetters('taxType', ['taxTypes']),
-
-
+    ...mapGetters('type', [
+      'types'
+    ]),
     pageTitle() {
       if (this.$route.name === 'posts.edit') {
         return this.$t('posts.edit_post')
@@ -151,27 +155,15 @@ export default {
       return this.$t('posts.new_post')
     },
 
-    ...mapGetters('taxType', ['taxTypes']),
+    getTypesPost() {
+      return this.types
+    },
 
     isEdit() {
       if (this.$route.name === 'posts.edit') {
         return true
       }
       return false
-    },
-
-    isTaxPerItem() {
-      return this.taxPerItem === 'YES' ? 1 : 0
-    },
-
-    getTaxTypes() {
-      return this.taxTypes.map((tax) => {
-        return {
-          ...tax,
-          tax_type_id: tax.id,
-          tax_name: tax.name + ' (' + tax.percent + '%)',
-        }
-      })
     },
 
     titleError() {
@@ -211,10 +203,9 @@ export default {
   },
 
   mounted() {
-    this.setTaxPerItem()
-
     this.$v.formData.$reset()
   },
+
 
   validations: {
     formData: {
@@ -235,68 +226,68 @@ export default {
   methods: {
     ...mapActions('post', [
       'addPost',
-      // 'fetchItem',
-      // 'updateItem',
+      'fetchPost',
+      'updateThumbnail',
+      'updatePost'
     ]),
 
-    ...mapActions('taxType', ['fetchTaxTypes']),
-
-    ...mapActions('company', ['fetchCompanySettings']),
+    ...mapActions('type', [
+      'fetchTypes'
+    ]),
 
     ...mapActions('modal', ['openModal']),
 
     ...mapActions('notification', ['showNotification']),
 
-    async setTaxPerItem() {
-      let response = await this.fetchCompanySettings(['tax_per_item'])
-
-      if (response.data) {
-        response.data.tax_per_item === 'YES'
-          ? (this.taxPerItem = 'YES')
-          : (this.taxPerItem = 'NO')
-      }
+    uploadFIle() {
+      this.formData.thumbnail = this.$refs.file.files[0]
     },
-
     async loadData() {
       if (this.isEdit) {
-        let response = await this.fetchItem(this.$route.params.id)
+        let response = await this.fetchPost(this.$route.params.id)
+        
+        let type_of_post = response.data.post.types
 
-        this.formData = { ...response.data.item, unit: null }
-
-        this.fractional_price = response.data.item.price
-
-       
-      } else {
-        this.fetchTaxTypes({ limit: 'all' })
+        this.formData = { ...response.data.post}
+        this.formData.types = type_of_post.map(type => type.id)
       }
+      await this.fetchTypes({ limit : 'all' })
+      this.getTypes = this.types     
     },
 
     async submitPost() {
-      this.$v.formData.$touch()
+      
+      let data_form = new FormData()
+
+      data_form.append('thumbnail', this.formData.thumbnail)
+      data_form.append('title', this.formData.title)
+      data_form.append('content', this.formData.content)
+      data_form.append('types', this.formData.types)
 
       if (this.$v.$invalid) {
         return false
       }
-
-
-      if (this.formData.unit) {
-        this.formData.unit_id = this.formData.unit.id
-      }
-      console.log(this.formData)
       let response
+      let response_update 
       this.isLoading = true
 
       if (this.isEdit) {
-        response = await this.updateItem(this.formData)
-      } else {
-        let data = {
-          ...this.formData,
+        let data_post = {
+          'title': this.formData.title,
+          'content': this.formData.content,
+          'types': this.formData.types,
+          'id'  : this.$route.params.id
         }
-        response = await this.addPost(data)
-      }
+        response = await this.updatePost(data_post)
 
+        if(response.data && ((typeof this.formData.thumbnail) != 'string')) {
+          let response_thumbnail = await this.updateThumbnail([data_form, this.$route.params.id])
+        }
+      } else {
+        response = await this.addPost(data_form)
+      }      
 
-      if (response.data) {
+      if (response.data || response_update.data) {
         this.isLoading = false
 
         if (!this.isEdit) {
@@ -306,13 +297,15 @@ export default {
           })
           this.$router.push('/admin/posts')
           return true
-        } else {
-          this.showNotification({
-            type: 'success',
-            message: this.$tc('items.updated_message'),
-          })
-          this.$router.push('/admin/items')
-          return true
+        } else {          
+          if(response.data) {
+            this.showNotification({
+              type: 'success',
+              message: this.$tc('posts.updated_message'),
+            })
+            this.$router.push('/admin/posts')
+            return true
+          }          
         }
         this.showNotification({
           type: 'error',
@@ -321,12 +314,6 @@ export default {
       }
     },
 
-    async addItemUnit() {
-      this.openModal({
-        title: this.$t('settings.customization.items.add_item_unit'),
-        componentName: 'ItemUnit',
-      })
-    },
   },
 }
 </script>

@@ -351,11 +351,14 @@ Route::prefix('/v1')->group(function () {
 
         // Comments
         //-----------------------------------
+        Route::post('/comments/delete', [CommentsController::class, 'destroy']);
         Route::resource('comments', CommentsController::class);
 
         // Type
         //-----------------------------------
+        Route::post('/types/delete', [TypeController::class, 'destroy']);
         Route::resource('types', TypeController::class);
+        
         
     });
     

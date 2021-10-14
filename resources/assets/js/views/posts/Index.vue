@@ -166,7 +166,6 @@
           </div>
         </sw-table-column>
 
-        <!-- [start] [name item] -->
         <sw-table-column 
         :sortable="true" 
         :label="$t('posts.title')" 
@@ -174,16 +173,14 @@
           <template slot-scope="row">
             <span>{{ $t('posts.title') }}</span>
             <router-link
-              :to="{ path: `posts/${row.id}/edit` }"
-              class="font-medium text-primary-500"
+              :to="{ path: `posts/detail/${row.id}` }"
+              class="font-medium text-primary-500 max-w-xs block"
             >
               {{ row.title }}
             </router-link>
           </template>
         </sw-table-column>
-        <!-- [end] [name item] -->
 
-        <!-- [start] [price item] -->
         <sw-table-column
           :sortable="true"
           :label="$t('posts.thumbnail')"
@@ -191,12 +188,12 @@
         >
           <template slot-scope="row">
             <span> {{ $t('post.thumbnail') }} </span>
-            <span>{{ row.thumbnail }}</span>
+            <div class="w-48">
+              <img class="w-full" :src="'/storage/post/' + row.thumbnail" alt="">
+            </div>
+            
           </template>
         </sw-table-column>
-        <!-- [end] [price item] -->
-
-        <!-- [start] [show discount] [27-06] -->
         
         <sw-table-column
           :sortable="true"
@@ -205,12 +202,28 @@
         >
           <template slot-scope="row">
             <span> {{ $t('posts.content') }} </span>
-            <span>{{ row.content }}</span>
+              <div 
+              class="max-w-xs overflow-hidden leading-6"
+              style="text-overflow: ellipsis; -webkit-line-clamp: 3;display: -webkit-box; -webkit-box-orient: vertical;"
+              v-html="row.content">
+              </div>
+              <button @click="viewAll(row.content, row.title)" class="font-bold">Xem chi tiet</button>
           </template>
         </sw-table-column>
-        <!-- [end] [show discount] [27-06] -->
 
-        <!-- [start][show description][24-06] -->
+        <sw-table-column
+          :sortable="true"
+          :label="$t('posts.types')"
+          show="types"
+        >
+          <template slot-scope="row">
+            <span> {{ $t('posts.content') }} </span>
+            <div v-for="type in row.types" :key="type.key">
+              <span class="inline-block bg-gray-800 rounded-sm mr-1 mb-2 p-2 text-white rounded-lg">{{ type.name }}</span>
+            </div>
+          </template>
+        </sw-table-column>
+
         <sw-table-column
           :sortable="true"
           :label="$t('posts.view')"
@@ -221,16 +234,13 @@
             <span>{{ row.view }}</span>
           </template>
         </sw-table-column>
-        <!-- [end][show description][24-06] -->
 
-        <!-- [start] [added on item] -->
         <sw-table-column
           :sortable="true"
           :label="$t('posts.added_on')"
           sort-as="created_at"
           show="formattedCreatedAt"
         />
-        <!-- [end] [added on item] -->
 
         <sw-table-column
           :sortable="true"
@@ -244,7 +254,7 @@
               <dot-icon slot="activator" />
 
               <sw-dropdown-item
-                :to="`items/${row.id}/edit`"
+                :to="`posts/${row.id}/edit`"
                 tag-name="router-link"
               >
                 <pencil-icon class="h-5 mr-3 text-gray-600" />
@@ -325,7 +335,6 @@ export default {
         return this.selectedPosts
       },
       set: function (val) {
-        console.log(val)
         this.selectPost(val)
       },
     },
@@ -345,10 +354,6 @@ export default {
       handler: 'setFilters',
       deep: true,
     },
-  },
-
-  mounted() {
-    // this.fetchItemUnits({ limit: 'all' })
   },
 
   destroyed() {
@@ -383,6 +388,7 @@ export default {
       }
       this.isRequestOngoing = true
       let response = await this.fetchPosts(data)
+      console.log(response.data)
       this.isRequestOngoing = false
       return {
         data: response.data.posts.data,
@@ -402,9 +408,7 @@ export default {
         name: '',
         unit: '',
         price: '',
-        // [start] [show discount] [27-06]
         discount: '',
-        // [end] [show discount] [27-06]
         description: '',
       }
     },
@@ -432,11 +436,11 @@ export default {
           let res = await this.deletePost({ ids: [id] })
 
           if (res.data.success) {
+            this.$refs.table.refresh()
             this.showNotification({
               type: 'success',
               message: this.$tc('items.deleted_message'),
             })
-            this.$refs.table.refresh()
             return true
           }
 
@@ -455,6 +459,17 @@ export default {
           })
           return true
         }
+      })
+    },
+
+    async viewAll(title, content) {
+      this.$swal({
+        title: title,
+        text: content,
+        width: 1000,
+        showCloseButton: true,
+        showCancelButton: false,
+        showConfirmButton: false,
       })
     },
 
@@ -488,9 +503,5 @@ export default {
       })
     },
   },
-
-  created() {
-    // console.log(this.posts)
-  }
 }
 </script>

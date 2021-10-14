@@ -2,9 +2,13 @@
 
 namespace Crater\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
+
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 
 class Post extends Model
@@ -15,6 +19,10 @@ class Post extends Model
 
     protected $fillable = [
         'title', 'thumbnail', 'content', 'view'
+    ];
+
+    protected $appends = [
+        'formattedCreatedAt',
     ];
 
     public function comments()
@@ -77,7 +85,7 @@ class Post extends Model
     public static function createPost($request)
     {
         $data = $request->validated();
-        
+
         $name_thumbnail = self::generateNameThumbnail($data['thumbnail']);
 
         $thumbnail = self::uploadThumbnail($data['thumbnail'], $name_thumbnail);
@@ -92,7 +100,6 @@ class Post extends Model
     public static function generateNameThumbnail($file) 
     {
         $name_file = $file->getClientOriginalName();
-
         $generate_name_file = date("mdhis") . '-' . str_replace(' ', '-', $name_file);
 
         return $generate_name_file;
@@ -112,20 +119,23 @@ class Post extends Model
         return $this->find($this->id);
     }
 
-    public static function updatePostthumbnail($request, $post)
+    public static function updatePostthumbnail($file, $post)
     {
 
-        $data = $request->validated();
+        $name_thumbnail = self::generateNameThumbnail($file);
 
-        $name_thumbnail = self::generateNameThumbnail($data['thumbnail']);
-
-        $thumbnail = self::uploadThumbnail($data['thumbnail'], $name_thumbnail);
+        $thumbnail = self::uploadThumbnail($file, $name_thumbnail);
 
         $data['thumbnail'] = $name_thumbnail;
 
         $post->update($data);
 
         return $post;
+    }
+
+    public function getFormattedCreatedAtAttribute($value)
+    {
+        return Carbon::parse($this->created_at)->format('d M Y');
     }
     
 }

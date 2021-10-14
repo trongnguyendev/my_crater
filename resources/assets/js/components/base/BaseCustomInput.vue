@@ -83,7 +83,7 @@ export default {
     },
     cols: {
       type: String,
-      default: '30',
+      default: '100',
     },
     invalid: {
       type: Boolean,

@@ -83,6 +83,11 @@ import Wizard from './views/wizard/Wizard.vue'
 // Posts
 import PostsIndex from './views/posts/Index.vue'
 import PostCreate from './views/posts/Create.vue'
+import PostDetail from './views/posts/Detail.vue'
+
+// Type
+import TypesIndex from './views/types/Index.vue'
+import TypesCreate from './views/types/Create.vue'
 
 Vue.use(VueRouter)
 
@@ -421,6 +426,30 @@ const routes = [
         name: 'posts.edit',
         component: PostCreate,
       },
+      {
+        path: 'posts/detail/:id',
+        name: 'posts.detail',
+        component: PostDetail
+      },
+      
+
+      // Types
+      {
+        path: 'types',
+        component: TypesIndex
+      },
+      {
+        path: 'types/create',
+        name: 'types.create',
+        component: TypesCreate,
+      },
+      {
+        path: 'types/:id/edit',
+        name: 'types.edit',
+        component: TypesCreate
+      },
+      
+
     ],
   },
 

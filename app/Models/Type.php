@@ -2,6 +2,7 @@
 
 namespace Crater\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,6 +14,10 @@ class Type extends Model
 
     protected $fillable = [
         'name', 'description'
+    ];
+
+    protected $appends = [
+        'formattedCreatedAt',
     ];
 
     public function posts()
@@ -75,5 +80,10 @@ class Type extends Model
         $this->update($request->validated());
 
         return $this->find($this->id);
+    }
+
+    public function getFormattedCreatedAtAttribute($value)
+    {
+        return Carbon::parse($this->created_at)->format('d M Y');
     }
 }

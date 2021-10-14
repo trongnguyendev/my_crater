@@ -13,15 +13,15 @@ export default {
     state.posts.push(data.post)
   },
 
-  // [types.UPDATE_ITEM](state, data) {
-  //   let pos = state.items.findIndex((item) => item.id === data.item.id)
-  //   console.log("-----pos--------------")
-  //   console.log(pos)
-  //   console.log("-------end pos------------")
-  //   console.log(data.item.discount)
-  //   console.log("-------post data------------")
-  //   state.items[pos] = data.item
-  // },
+  [types.UPDATE_POST](state, data) {
+    let pos = state.posts.findIndex((post) => post.id === data.post.id)
+    state.posts[pos] = data.post
+  },
+
+  [types.UPDATE_THUMBNAIL_POST](state, data) {
+    let pos = state.posts.findIndex((post) => post.id === data.post.id)
+    state.posts[pos]['thumbnail'] = data.post
+  },
 
   [types.DELETE_POST](state, id) {  
     let index = state.posts.findIndex((post) => post.id === id)
