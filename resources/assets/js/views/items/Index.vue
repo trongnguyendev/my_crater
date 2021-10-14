@@ -404,6 +404,7 @@ export default {
         orderBy: sort.order || 'desc',
         page,
       }
+      console.log(data)
 
       this.isRequestOngoing = true
       let response = await this.fetchItems(data)

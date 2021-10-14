@@ -10,7 +10,9 @@
     "reports": "Reports",
     "settings": "Settings",
     "logout": "Logout",
-    "users": "Users"
+    "users": "Users",
+    "posts": "Posts",
+    "types": "Types"
   },
   "general": {
     "add_company": "Add Company",
@@ -222,6 +224,57 @@
     "created_message": "Item created successfully",
     "updated_message": "Item updated successfully",
     "deleted_message": "Item deleted successfully | Items deleted successfully"
+  },
+
+  "posts": {
+    "title": "Posts",
+    "post" : "Post",
+    "no_posts": "No posts yet!",
+    "list_of_posts": "This section will contain the list of posts.",
+    "add_post": "Add Post",
+    "add_new_post": "Add New Post",
+    "thumbnail": "Thumbnail",
+    "content": "Content",
+    "view" : "View",
+    "added_on" : "Added On",
+    "action" : "Actions",
+    "new_post": "New Post",
+    "edit_post": "Edit Post",
+    "update_post": "Update Post",
+    "save_post": "Save Post",
+    "created_message": "Post created successfully",
+    "types": "Type"
+  },
+  "types": {
+    "title": "Types",
+    "name": "Name",
+    "description": "Description",
+    "type": "Type",
+    "no_types": "No types yet!",
+    "list_of_types": "This section will contain the list of types.",
+    "add_type": "Add Type",
+    "add_new_type": "Add New Type",
+    "added_on" : "Added On",
+    "action" : "Actions",
+    "new_type": "New Type",
+    "edit_type": "Edit Type",
+    "update_type": "Update Type",
+    "save_type": "Save Type",
+    "created_message": "Type created successfully"
+  },
+  "comments": {
+    "title": "Comments",
+    "comment" : "Comment",
+    "no_comments": "No comments yet!",
+    "list_of_comments": "This section will contain the list of comments.",
+    "add_comment": "Add Comment",
+    "add_new_comment": "Add New Comment",
+    "content": "Content",
+    "action" : "Actions",
+    "new_comment": "New Comment",
+    "save_comment": "Save Comment",
+    "created_message": "Comment created successfully",
+    "confirm_delete": "Delete this comment"
   },
   "estimates": {
     "title": "Estimates",

@@ -80,6 +80,15 @@ import CustomFieldsIndex from './views/settings/CustomFieldsSetting.vue'
 import PaymentMode from './views/settings/PaymentsModeSetting.vue'
 import Wizard from './views/wizard/Wizard.vue'
 
+// Posts
+import PostsIndex from './views/posts/Index.vue'
+import PostCreate from './views/posts/Create.vue'
+import PostDetail from './views/posts/Detail.vue'
+
+// Type
+import TypesIndex from './views/types/Index.vue'
+import TypesCreate from './views/types/Create.vue'
+
 Vue.use(VueRouter)
 
 const routes = [
@@ -401,6 +410,46 @@ const routes = [
           },
         ],
       },
+
+      // Posts
+      {
+        path: 'posts',
+        component: PostsIndex,
+      },
+      {
+        path: 'posts/create',
+        name: 'posts.create',
+        component: PostCreate,
+      },
+      {
+        path: 'posts/:id/edit',
+        name: 'posts.edit',
+        component: PostCreate,
+      },
+      {
+        path: 'posts/detail/:id',
+        name: 'posts.detail',
+        component: PostDetail
+      },
+      
+
+      // Types
+      {
+        path: 'types',
+        component: TypesIndex
+      },
+      {
+        path: 'types/create',
+        name: 'types.create',
+        component: TypesCreate,
+      },
+      {
+        path: 'types/:id/edit',
+        name: 'types.edit',
+        component: TypesCreate
+      },
+      
+
     ],
   },
 

@@ -62,6 +62,7 @@ use Crater\Http\Controllers\V1\Update\UnzipUpdateController;
 use Crater\Http\Controllers\V1\Users\UsersController;
 use Crater\Http\Controllers\V1\Post\PostsController;
 use Crater\Http\Controllers\V1\Comment\CommentsController;
+use Crater\Http\Controllers\V1\Type\TypeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -343,13 +344,21 @@ Route::prefix('/v1')->group(function () {
 
         // Posts
         //----------------------------------
+        Route::post('/posts/delete', [PostsController::class, 'destroy']);
         Route::resource('posts', PostsController::class);
         Route::post('posts/update-thumbnail/{post}', [PostsController::class, 'updateThumbnail']);
 
 
         // Comments
         //-----------------------------------
+        Route::post('/comments/delete', [CommentsController::class, 'destroy']);
         Route::resource('comments', CommentsController::class);
+
+        // Type
+        //-----------------------------------
+        Route::post('/types/delete', [TypeController::class, 'destroy']);
+        Route::resource('types', TypeController::class);
+        
         
     });
     

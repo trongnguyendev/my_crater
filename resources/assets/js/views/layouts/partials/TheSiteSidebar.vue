@@ -118,6 +118,20 @@ export default {
             route: '/admin/items',
           },
         ],
+        
+        [
+          {
+            title: 'Types',
+            icon: 'calculator-icon',
+            route: '/admin/types'
+          },
+          {
+            title: 'navigation.posts',
+            icon: 'calculator-icon',
+            route: '/admin/posts'
+          },
+        ],
+
         [
           {
             title: 'navigation.estimates',
@@ -140,6 +154,7 @@ export default {
             route: '/admin/expenses',
           },
         ],
+        
         [
           {
             title: 'navigation.reports',
